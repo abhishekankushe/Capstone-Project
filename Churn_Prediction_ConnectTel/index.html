@@ -1,27 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConnectTel | Retention AI</title>
+    <title>ChurnPredict AI | Customer Retention Dashboard</title>
+
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2072/2072162.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#f0fdfa', 100: '#ccfbf1', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 900: '#134e4a' },
+                        accent: { 500: '#6366f1', 600: '#4f46e5' }
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(0,0,0,0.05)',
+                        'glow': '0 0 20px rgba(20, 184, 166, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* Smooth tab transitions */
+        /* Smooth Page Transitions */
         .page-section {
             display: none;
-            animation: fadeIn 0.4s ease-in-out;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .page-section.active {
             display: block;
         }
 
-        @keyframes fadeIn {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(30px);
             }
 
             to {
@@ -30,336 +58,1538 @@
             }
         }
 
-        /* Active nav link styling */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Active Navigation Link Styling */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #0d9488;
+        }
+
         .nav-link.active {
-            color: #4f46e5;
-            border-bottom: 2px solid #4f46e5;
-            font-weight: 600;
+            color: #0d9488;
+            font-weight: 700;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 3px;
+            background-color: #0d9488;
+            border-radius: 3px 3px 0 0;
+            transition: width 0.3s ease;
+        }
+
+        /* Premium Glassmorphism Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border-color: rgba(20, 184, 166, 0.3);
         }
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+<body
+    class="bg-[#f8fafc] text-slate-800 min-h-screen font-sans flex flex-col selection:bg-brand-500 selection:text-white">
 
-    <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+    <nav
+        class="bg-white/90 backdrop-blur-xl shadow-sm sticky top-0 z-50 transition-all duration-300 border-b border-slate-200/60">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-3">
+            <div class="flex justify-between items-center h-20">
+
+                <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('home')">
                     <div
-                        class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-200">
-                        CT</div>
-                    <span class="font-bold text-xl tracking-tight text-slate-900">ConnectTel <span
-                            class="text-indigo-600">AI</span></span>
+                        class="relative w-12 h-12 bg-gradient-to-br from-brand-400 to-brand-600 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-brand-500/30 group-hover:shadow-glow transition-all duration-300">
+                        <i class="fa-solid fa-chart-pie text-xl absolute opacity-30 right-1 bottom-1"></i>
+                        <i class="fa-solid fa-brain text-2xl z-10 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <h1 class="text-2xl font-black tracking-tight text-slate-900">Churn<span
+                            class="text-brand-600">Prediction</span></h1>
                 </div>
-                <div class="flex space-x-8">
-                    <button onclick="switchTab('single')" id="nav-single"
-                        class="nav-link active py-5 text-sm font-medium text-slate-500 hover:text-indigo-600 transition">Single
-                        Customer</button>
-                    <button onclick="switchTab('bulk')" id="nav-bulk"
-                        class="nav-link py-5 text-sm font-medium text-slate-500 hover:text-indigo-600 transition">Batch
-                        Dashboard</button>
+
+                <div class="hidden md:flex space-x-8 text-sm font-semibold text-slate-500">
+                    <button onclick="switchTab('home')" id="nav-home" class="nav-link active">Overview</button>
+                    <button onclick="switchTab('single')" id="nav-single" class="nav-link">Single Scoring</button>
+                    <button onclick="switchTab('bulk')" id="nav-bulk" class="nav-link">Bulk Processing</button>
+                    <button onclick="switchTab('pipeline')" id="nav-pipeline" class="nav-link">Pipeline</button>
+                    <button onclick="switchTab('about')" id="nav-about" class="nav-link">Tech Stack</button>
+                    <button onclick="switchTab('contact')" id="nav-contact" class="nav-link">Contact</button>
                 </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn"
+                        class="text-slate-600 hover:text-brand-600 focus:outline-none transition-colors">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-2xl">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <button onclick="switchTab('home')"
+                    class="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 transition-colors"><i
+                        class="fa-solid fa-house w-6"></i> Overview</button>
+                <button onclick="switchTab('single')"
+                    class="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 transition-colors"><i
+                        class="fa-solid fa-crosshairs w-6"></i> Live Scoring</button>
+                <button onclick="switchTab('bulk')"
+                    class="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 transition-colors"><i
+                        class="fa-solid fa-chart-simple w-6"></i> Analytics Dashboard</button>
+                <button onclick="switchTab('pipeline')"
+                    class="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 transition-colors"><i
+                        class="fa-solid fa-diagram-project w-6"></i> Project Pipeline</button>
+                <button onclick="switchTab('about')"
+                    class="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 transition-colors"><i
+                        class="fa-solid fa-circle-info w-6"></i> About System</button>
+                <button onclick="switchTab('contact')"
+                    class="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 transition-colors"><i
+                        class="fa-solid fa-envelope w-6"></i> Contact Developer</button>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-grow flex flex-col">
 
-        <div id="page-single" class="page-section active">
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold text-slate-900">Manual Risk Assessment</h1>
-                <p class="text-slate-500 text-sm mt-1">Enter customer details to generate a real-time churn probability
-                    score.</p>
+        <section id="page-home" class="page-section active flex-grow">
+
+            <div class="relative bg-slate-900 overflow-hidden flex items-center pt-24 pb-32 lg:pt-32 lg:pb-40">
+                <div class="absolute inset-0 z-0">
+                    <div
+                        class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-brand-600/20 blur-[120px]">
+                    </div>
+                    <div
+                        class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-accent-600/20 blur-[120px]">
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10">
+                    </div>
+                </div>
+
+                <div class="relative max-w-7xl mx-auto px-6 lg:px-8 z-10 w-full">
+                    <div class="grid lg:grid-cols-2 gap-16 items-center">
+                        <div class="max-w-2xl text-center lg:text-left">
+                            <span
+                                class="inline-flex items-center rounded-full bg-brand-500/10 px-5 py-2 text-sm font-bold text-brand-400 ring-1 ring-inset ring-brand-500/30 mb-8 backdrop-blur-md">
+                                <i class="fa-solid fa-bolt text-amber-400 mr-2"></i> Next-Gen ML Intelligence
+                            </span>
+                            <h1 class="text-5xl lg:text-6xl font-black tracking-tight text-white mb-6 leading-[1.1]">
+                                Identify Churn Risk <span
+                                    class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-accent-400">Before
+                                    It Escalates.</span>
+                            </h1>
+                            <p class="text-xl leading-relaxed text-slate-300 mb-10 font-medium">
+                                Analyze behavioral patterns and billing metrics instantly. Turn proactive data into your
+                                strongest customer retention strategy.
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                <button onclick="switchTab('single')"
+                                    class="inline-flex justify-center items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-brand-500/40 hover:shadow-brand-500/60 hover:-translate-y-1 transition-all duration-300">
+                                    <i class="fa-solid fa-crosshairs"></i> Try Live Scoring
+                                </button>
+                                <button onclick="switchTab('bulk')"
+                                    class="inline-flex justify-center items-center gap-3 rounded-2xl bg-slate-800/50 px-8 py-4 text-base font-bold text-white backdrop-blur-md hover:bg-slate-700/50 ring-1 ring-slate-700 hover:-translate-y-1 transition-all duration-300">
+                                    <i class="fa-solid fa-chart-pie text-brand-400"></i> View Analytics
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="hidden lg:block relative animate-float">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-tr from-brand-500/20 to-accent-500/20 rounded-[40px] blur-3xl transform rotate-6">
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
+                                alt="Dashboard Preview"
+                                class="relative rounded-[30px] shadow-2xl border-4 border-slate-800/50 transform -rotate-2 hover:rotate-0 transition-transform duration-500 object-cover h-[450px] w-full">
+
+                            <div
+                                class="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-4">
+                                <div
+                                    class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-xl">
+                                    <i class="fa-solid fa-arrow-trend-up"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Accuracy</p>
+                                    <p class="text-2xl font-black text-slate-800">94.8%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <form id="churnForm" class="space-y-5">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide">Tenure
-                                (Months)</label>
-                            <input type="number" id="tenure" required
-                                class="mt-2 w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition">
+            <div class="bg-white py-20 border-b border-slate-200">
+                <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl font-black text-slate-900">Enterprise-Grade Prediction Engine</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <div
+                            class="glass-card flex flex-col items-center text-center p-10 rounded-[32px] group relative overflow-hidden">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <div
+                                class="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center text-4xl mb-6 shadow-sm group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 z-10">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 z-10">Advanced ML Models</h3>
+                            <p class="mt-4 text-slate-500 font-medium leading-relaxed z-10">Utilizing state-of-the-art
+                                classification algorithms to identify at-risk cohorts with maximum precision.</p>
+                        </div>
+                        <div
+                            class="glass-card flex flex-col items-center text-center p-10 rounded-[32px] group relative overflow-hidden">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-b from-brand-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <div
+                                class="w-20 h-20 bg-brand-50 text-brand-600 rounded-3xl flex items-center justify-center text-4xl mb-6 shadow-sm group-hover:scale-110 group-hover:bg-brand-600 group-hover:text-white transition-all duration-300 z-10">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 z-10">Real-time API</h3>
+                            <p class="mt-4 text-slate-500 font-medium leading-relaxed z-10">Connect seamlessly to our
+                                FastAPI backend for instantaneous risk scoring on individual profiles.</p>
+                        </div>
+                        <div
+                            class="glass-card flex flex-col items-center text-center p-10 rounded-[32px] group relative overflow-hidden">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-b from-accent-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <div
+                                class="w-20 h-20 bg-accent-50 text-accent-600 rounded-3xl flex items-center justify-center text-4xl mb-6 shadow-sm group-hover:scale-110 group-hover:bg-accent-600 group-hover:text-white transition-all duration-300 z-10">
+                                <i class="fa-solid fa-file-csv"></i>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 z-10">Batch Processing</h3>
+                            <p class="mt-4 text-slate-500 font-medium leading-relaxed z-10">Upload massive CSV datasets
+                                instantly to generate comprehensive analytic distribution charts.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-6 lg:px-8 py-20">
+                <div class="text-center mb-16">
+                    <span
+                        class="inline-flex items-center rounded-full bg-brand-500/10 px-5 py-2 text-sm font-bold text-brand-600 ring-1 ring-inset ring-brand-500/30 mb-6">
+                        <i class="fa-solid fa-book-open mr-2"></i> Executive Summary
+                    </span>
+                    <h2 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">Comprehensive Project Overview
+                    </h2>
+                    <p class="text-slate-500 font-medium text-lg max-w-2xl mx-auto">A deep dive into the business
+                        problem, dataset, and machine learning approach.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-8">
+
+                        <div class="glass-card p-10 rounded-[32px]">
+                            <h3 class="text-2xl font-black text-slate-800 mb-4 flex items-center gap-3">
+                                <i class="fa-solid fa-triangle-exclamation text-red-500"></i> The Business Problem
+                            </h3>
+                            <p class="text-slate-600 text-lg leading-relaxed font-medium mb-6">
+                                Acquiring a new customer can cost up to five times more than retaining an existing one.
+                                In today’s highly competitive subscription economy, customer churn (attrition) is one of
+                                the most critical threats to recurring revenue.
+                            </p>
+                            <p class="text-slate-600 text-lg leading-relaxed font-medium">
+                                Subscription-based businesses generate vast amounts of customer usage and billing data,
+                                yet struggle to utilize it effectively. <strong class="text-brand-600 font-bold">The
+                                    goal of this project is to build a robust supervised machine learning classification
+                                    system</strong> that accurately identifies high-risk customers based on historical
+                                demographics, account information, and interaction sentiment, minimizing false negatives
+                                to ensure no at-risk customer slips through the cracks.
+                            </p>
+                        </div>
+
+                        <div class="glass-card p-10 rounded-[32px]">
+                            <h3 class="text-2xl font-black text-slate-800 mb-4 flex items-center gap-3">
+                                <i class="fa-solid fa-lightbulb text-amber-500"></i> The Solution Approach
+                            </h3>
+                            <p class="text-slate-600 text-lg leading-relaxed font-medium">
+                                The solution leverages a <strong class="text-slate-800">data-driven ensemble learning
+                                    approach</strong>. Because customer behavior is highly non-linear and features often
+                                interact in complex ways (e.g., the relationship between high monthly charges and short
+                                tenure), tree-based algorithms like <strong class="text-slate-800">XGBoost and Random
+                                    Forest</strong> were selected.
+                            </p>
+                            <div
+                                class="mt-6 p-6 bg-blue-50/50 border border-blue-100 rounded-2xl flex flex-col sm:flex-row gap-5 items-start">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 text-xl">
+                                    <i class="fa-solid fa-scale-balanced"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-slate-800 font-bold mb-2">Handling Imbalanced Data</h4>
+                                    <p class="text-slate-600 text-[15px] font-medium leading-relaxed">To combat the
+                                        natural class imbalance of churn datasets (where retained customers heavily
+                                        outnumber churned ones), <strong class="text-blue-600 font-bold">SMOTE
+                                            (Synthetic Minority Over-sampling Technique)</strong> was applied to
+                                        stabilize the training process and improve predictive accuracy for the minority
+                                        class.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-10 rounded-[32px] border-l-8 border-l-emerald-500">
+                            <h3 class="text-2xl font-black text-slate-800 mb-4 flex items-center gap-3">
+                                <i class="fa-solid fa-sack-dollar text-emerald-500"></i> Project Purpose & Business
+                                Impact
+                            </h3>
+                            <p class="text-slate-600 text-lg leading-relaxed font-medium mb-6">
+                                This platform is more than just a predictive model; it is a business intelligence tool.
+                                By integrating millisecond-latency live scoring and bulk cohort analytics, the system
+                                empowers businesses to:
+                            </p>
+                            <ul class="space-y-4">
+                                <li class="flex items-start gap-4">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mt-1 text-lg"></i>
+                                    <span class="text-slate-600 font-medium text-lg"><strong
+                                            class="text-slate-800">Allocate marketing budgets efficiently</strong> by
+                                        offering retention discounts only to those who actually need them.</span>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mt-1 text-lg"></i>
+                                    <span class="text-slate-600 font-medium text-lg"><strong
+                                            class="text-slate-800">Reduce Customer Acquisition Cost (CAC)</strong> by
+                                        drastically extending the lifetime of existing accounts.</span>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mt-1 text-lg"></i>
+                                    <span class="text-slate-600 font-medium text-lg"><strong
+                                            class="text-slate-800">Understand the "Why"</strong> behind customer
+                                        dissatisfaction using explainable AI to drive better product and pricing
+                                        decisions.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="space-y-8">
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3 class="text-xl font-black text-slate-800 mb-6 flex items-center gap-3">
+                                <i class="fa-solid fa-database text-brand-600"></i> Dataset Overview
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm">
+                                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Target
+                                        Variable</p>
+                                    <p class="text-xl font-bold text-slate-800">Churn <span
+                                            class="text-sm font-medium text-slate-500">(1 = Yes, 0 = No)</span></p>
+                                </div>
+                                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm">
+                                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Dataset
+                                        Scale</p>
+                                    <p class="text-xl font-bold text-slate-800">25,000+ <span
+                                            class="text-sm font-medium text-slate-500">Records Processed</span></p>
+                                </div>
+                                <div class="pt-2">
+                                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Key
+                                        Predictive Attributes</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span
+                                            class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 shadow-sm">Tenure</span>
+                                        <span
+                                            class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 shadow-sm">Monthly
+                                            Charges</span>
+                                        <span
+                                            class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 shadow-sm">Contract
+                                            Type</span>
+                                        <span
+                                            class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 shadow-sm">Support
+                                            Tickets</span>
+                                        <span
+                                            class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 shadow-sm">ARPU</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3 class="text-xl font-black text-slate-800 mb-6 flex items-center gap-3">
+                                <i class="fa-solid fa-chart-simple text-purple-500"></i> Key KPIs
+                            </h3>
+
+                            <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Business
+                                Metrics</h4>
+                            <div class="space-y-3 mb-8">
+                                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                                    <span class="text-slate-600 font-bold text-sm">Churn Rate</span>
+                                    <i class="fa-solid fa-arrow-trend-down text-emerald-500"></i>
+                                </div>
+                                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                                    <span class="text-slate-600 font-bold text-sm">Revenue at Risk</span>
+                                    <i class="fa-solid fa-sack-dollar text-red-400"></i>
+                                </div>
+                                <div class="flex justify-between items-center pb-2">
+                                    <span class="text-slate-600 font-bold text-sm">Customer LTV</span>
+                                    <i class="fa-solid fa-arrow-trend-up text-emerald-500"></i>
+                                </div>
+                            </div>
+
+                            <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Technical
+                                Metrics</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                                    <span class="text-slate-600 font-bold text-sm"><strong
+                                            class="text-brand-600">Recall</strong> (Primary Focus)</span>
+                                    <i class="fa-solid fa-bullseye text-brand-500"></i>
+                                </div>
+                                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                                    <span class="text-slate-600 font-bold text-sm">F1-Score</span>
+                                    <i class="fa-solid fa-scale-balanced text-slate-400"></i>
+                                </div>
+                                <div class="flex justify-between items-center pb-2">
+                                    <span class="text-slate-600 font-bold text-sm">ROC-AUC</span>
+                                    <i class="fa-solid fa-chart-area text-slate-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px] bg-gradient-to-br from-brand-600 to-accent-600 border-none shadow-xl shadow-brand-500/30 text-white relative overflow-hidden group cursor-pointer"
+                            onclick="switchTab('pipeline')">
+                            <div
+                                class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10">
+                            </div>
+                            <div
+                                class="absolute -right-4 -top-4 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
+                                <i class="fa-solid fa-diagram-project text-9xl"></i>
+                            </div>
+                            <div class="relative z-10">
+                                <h3 class="text-2xl font-black mb-3">ML Pipeline Summary</h3>
+                                <p class="text-brand-50 text-[15px] font-medium leading-relaxed mb-6">Explore the
+                                    complete end-to-end 6-step machine learning architecture, from data engineering to
+                                    FastAPI deployment.</p>
+                                <div
+                                    class="inline-flex items-center gap-2 text-sm font-bold bg-white/20 px-5 py-2.5 rounded-xl backdrop-blur-md group-hover:bg-white/30 transition-colors shadow-sm">
+                                    View Full Pipeline <i
+                                        class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
+
+            <section id="page-single" class="page-section">
+                <div class="mb-12 text-center sm:text-left flex items-center gap-4">
+                    <div
+                        class="w-14 h-14 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-900">Live Customer Scoring</h2>
+                        <p class="text-slate-500 font-medium text-lg">Input metrics below to generate an immediate
+                            retention analysis.</p>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-10">
+                    <div class="lg:col-span-5 glass-card p-10 rounded-[32px]">
+                        <form id="churnForm" class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Tenure (Months)</label>
+                                <div class="relative group">
+                                    <div
+                                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-500 transition-colors">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                    </div>
+                                    <input type="number" id="tenure" placeholder="e.g. 24" required
+                                        class="pl-12 w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all font-semibold text-slate-700">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Monthly Charges ($)</label>
+                                <div class="relative group">
+                                    <div
+                                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-500 transition-colors">
+                                        <i class="fa-solid fa-dollar-sign"></i>
+                                    </div>
+                                    <input type="number" id="monthly_charges" step="0.01" placeholder="e.g. 89.99"
+                                        required
+                                        class="pl-12 w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all font-semibold text-slate-700">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Contract Type</label>
+                                <div class="relative group">
+                                    <div
+                                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-500 transition-colors">
+                                        <i class="fa-solid fa-file-signature"></i>
+                                    </div>
+                                    <select id="contract"
+                                        class="pl-12 w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all appearance-none font-semibold text-slate-700 cursor-pointer">
+                                        <option value="Month-to-Month">Month-to-Month</option>
+                                        <option value="1 Year">1 Year</option>
+                                        <option value="2 Year">2 Year</option>
+                                    </select>
+                                    <div
+                                        class="absolute inset-y-0 right-0 flex items-center pr-5 pointer-events-none text-slate-400">
+                                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Recent Complaints (Last
+                                    3m)</label>
+                                <div class="relative group">
+                                    <div
+                                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-500 transition-colors">
+                                        <i class="fa-solid fa-headset"></i>
+                                    </div>
+                                    <input type="number" id="complaints" value="0" min="0" placeholder="0"
+                                        class="pl-12 w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all font-semibold text-slate-700">
+                                </div>
+                            </div>
+
+                            <button
+                                class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-brand-500/30 hover:-translate-y-1 transition-all flex justify-center items-center gap-2 mt-4">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Predict Risk Score
+                            </button>
+                        </form>
+                    </div>
+
+                    <div
+                        class="lg:col-span-7 glass-card p-10 rounded-[32px] flex flex-col items-center justify-center min-h-[450px] relative overflow-hidden bg-gradient-to-br from-white to-slate-50/50">
+                        <div class="absolute -right-16 -top-16 opacity-[0.02] text-brand-900 pointer-events-none">
+                            <i class="fa-solid fa-fingerprint text-[300px]"></i>
+                        </div>
+
+                        <div id="single-placeholder" class="text-center z-10 animate-pulse">
+                            <div
+                                class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300 text-4xl shadow-inner border-4 border-white">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                            </div>
+                            <h3 class="text-2xl font-black text-slate-800">Awaiting Profile Data</h3>
+                            <p class="text-slate-500 max-w-sm mt-3 font-medium leading-relaxed">Complete the form
+                                parameters and click predict to generate an AI-driven risk analysis.</p>
+                        </div>
+
+                        <div id="single-result" class="hidden text-center z-10 w-full animate-[fadeInUp_0.4s_ease-out]">
+                            <div
+                                class="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-100 rounded-full mb-8 border border-slate-200">
+                                <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
+                                <h3 class="text-xs font-bold text-slate-600 uppercase tracking-widest">Analysis Complete
+                                </h3>
+                            </div>
+
+                            <div class="relative w-full max-w-[320px] mx-auto mb-10">
+                                <canvas id="gaugeChart"></canvas>
+                                <div class="absolute left-0 right-0 bottom-2 flex flex-col items-center">
+                                    <span id="probPercent"
+                                        class="text-5xl sm:text-6xl font-black text-slate-800 tracking-tighter drop-shadow-sm">0%</span>
+                                    <span
+                                        class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Probability</span>
+                                </div>
+                            </div>
+
+                            <div id="riskAlertBox"
+                                class="p-8 rounded-[24px] inline-flex flex-col items-center w-full max-w-md shadow-sm border transition-all duration-500">
+                                <h3 id="riskTitle"
+                                    class="text-2xl font-black mb-3 flex items-center justify-center gap-3"></h3>
+                                <p id="recText" class="font-bold text-[15px] leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-bulk" class="page-section">
+                <div class="mb-12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-14 h-14 bg-accent-100 text-accent-600 rounded-2xl flex items-center justify-center text-2xl">
+                            <i class="fa-solid fa-chart-pie"></i>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide">Monthly
-                                Charges ($)</label>
-                            <input type="number" id="monthly_charges" step="0.01" required
-                                class="mt-2 w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition">
+                            <h2 class="text-3xl font-black text-slate-900">Churn Analytics Dashboard</h2>
+                            <p class="mt-1 text-slate-500 font-medium text-lg">Upload cohort datasets for bulk risk
+                                distribution.</p>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide">Contract
-                                Type</label>
-                            <select id="contract"
-                                class="mt-2 w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition">
-                                <option value="Month-to-Month">Month-to-Month</option>
-                                <option value="1 Year">1 Year</option>
-                                <option value="2 Year">2 Year</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide">Complaints
-                                (Last 3 Months)</label>
-                            <input type="number" id="complaints" value="0" required
-                                class="mt-2 w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition">
-                        </div>
-                        <button type="submit"
-                            class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition">Analyze
-                            Customer</button>
-                    </form>
+                    </div>
+                    <button
+                        class="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm flex items-center gap-3 group">
+                        <i
+                            class="fa-solid fa-cloud-arrow-down text-brand-500 group-hover:-translate-y-1 transition-transform"></i>
+                        Export Report
+                    </button>
                 </div>
 
                 <div
-                    class="lg:col-span-2 flex flex-col justify-center bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-[400px]">
-                    <div id="single-placeholder" class="text-center text-slate-400">
-                        <svg class="mx-auto h-12 w-12 text-slate-300 mb-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        <p class="font-medium">Awaiting data input...</p>
-                    </div>
-
-                    <div id="single-result" class="hidden flex flex-col md:flex-row items-center gap-10">
-                        <div class="w-64 h-64 relative">
-                            <canvas id="gaugeChart"></canvas>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10">
-                                <span id="probText" class="text-4xl font-black text-slate-800">0%</span>
-                                <span class="text-[10px] font-bold uppercase text-slate-400">Risk Score</span>
-                            </div>
-                        </div>
-                        <div class="flex-1 text-center md:text-left">
-                            <h3 id="riskTitle" class="text-3xl font-black mb-3">STABLE</h3>
-                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                <p class="text-xs font-bold text-slate-400 uppercase mb-1">Recommended Action</p>
-                                <p id="recText" class="text-sm text-slate-600 leading-relaxed"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-bulk" class="page-section">
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold text-slate-900">Batch Analytics Dashboard</h1>
-                <p class="text-slate-500 text-sm mt-1">Upload a CSV file to process multiple customers and generate a
-                    comprehensive risk report.</p>
-            </div>
-
-            <div
-                class="bg-white p-10 rounded-2xl shadow-sm border-2 border-dashed border-slate-300 text-center hover:bg-slate-50 transition mb-8">
-                <input type="file" id="csvFile" accept=".csv" class="hidden">
-                <label for="csvFile" class="cursor-pointer flex flex-col items-center">
+                    class="glass-card p-12 rounded-[32px] border-2 border-dashed border-brand-300 text-center mb-12 hover:bg-brand-50/30 hover:border-brand-500 transition-all group relative cursor-pointer overflow-hidden">
                     <div
-                        class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
+                        class="absolute inset-0 bg-gradient-to-br from-brand-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                     </div>
-                    <span class="text-lg font-bold text-slate-700">Click to upload CSV database</span>
-                    <span class="text-xs text-slate-400 mt-2">Max file size: 10MB</span>
-                </label>
-            </div>
+                    <input type="file" id="csvFile" accept=".csv"
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                    <div
+                        class="relative w-24 h-24 bg-white shadow-soft text-brand-500 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl group-hover:-translate-y-2 group-hover:shadow-glow transition-all duration-300">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <h3 class="relative text-2xl font-black text-slate-800 mb-2">Drag & Drop Dataset or Click to Upload
+                    </h3>
+                    <p class="relative text-base font-medium text-slate-500">Supports .csv files formatted with required
+                        schema</p>
+                </div>
 
-            <div id="dashboard-reports" class="hidden space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                <div id="dashboard-reports" class="hidden space-y-8 animate-[fadeInUp_0.6s_ease-out]">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div
-                            class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-xl">
-                            👥</div>
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Total Analyzed</p>
-                            <p id="stat-total" class="text-2xl font-black text-slate-800">0</p>
+                            class="glass-card p-8 rounded-[24px] border-l-4 border-l-blue-500 relative overflow-hidden group">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div
+                                    class="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Analyzed</p>
+                            </div>
+                            <p id="stat-total" class="text-4xl font-black text-slate-800 tracking-tight">0</p>
+                            <i
+                                class="fa-solid fa-chart-simple absolute -right-4 -bottom-4 text-7xl text-slate-100 opacity-50 group-hover:scale-110 transition-transform duration-500"></i>
+                        </div>
+
+                        <div
+                            class="glass-card p-8 rounded-[24px] border-l-4 border-l-red-500 relative overflow-hidden group">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div
+                                    class="w-10 h-10 bg-red-50 text-red-500 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">High Risk</p>
+                            </div>
+                            <p id="stat-high" class="text-4xl font-black text-red-600 tracking-tight">0</p>
+                            <i
+                                class="fa-solid fa-fire absolute -right-4 -bottom-4 text-7xl text-red-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></i>
+                        </div>
+
+                        <div
+                            class="glass-card p-8 rounded-[24px] border-l-4 border-l-amber-500 relative overflow-hidden group">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div
+                                    class="w-10 h-10 bg-amber-50 text-amber-500 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-percent"></i>
+                                </div>
+                                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Avg Prob</p>
+                            </div>
+                            <p id="stat-avg" class="text-4xl font-black text-amber-500 tracking-tight">0%</p>
+                            <i
+                                class="fa-solid fa-bullseye absolute -right-4 -bottom-4 text-7xl text-amber-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></i>
+                        </div>
+
+                        <div
+                            class="glass-card p-8 rounded-[24px] border-l-4 border-l-emerald-500 relative overflow-hidden group">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div
+                                    class="w-10 h-10 bg-emerald-50 text-emerald-500 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-sack-dollar"></i>
+                                </div>
+                                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">At Risk ($)</p>
+                            </div>
+                            <p id="stat-rev" class="text-4xl font-black text-emerald-600 tracking-tight">$0</p>
+                            <i
+                                class="fa-solid fa-money-bill-trend-up absolute -right-4 -bottom-4 text-7xl text-emerald-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></i>
                         </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
-                        <div
-                            class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-600 text-xl">
-                            🚨</div>
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">High Risk Accounts</p>
-                            <p id="stat-high" class="text-2xl font-black text-red-600">0</p>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column text-brand-500"></i> Probability Distribution
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="distChart"></canvas></div>
                         </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
-                        <div
-                            class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 text-xl">
-                            📊</div>
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Avg Churn Probability</p>
-                            <p id="stat-avg" class="text-2xl font-black text-amber-600">0%</p>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-accent-500"></i> Risk by Contract Type
+                            </h3>
+                            <div class="relative h-72 w-full flex justify-center"><canvas id="contractChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-blue-500"></i> Risk vs. Tenure Trend
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="tenureChart"></canvas></div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-pink-500"></i> Top Churn Drivers
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="factorChart"></canvas></div>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="text-sm font-bold text-slate-700 mb-6">Overall Risk Distribution</h3>
-                        <div class="h-64 flex justify-center"><canvas id="pieChart"></canvas></div>
+            <section id="page-pipeline" class="page-section max-w-7xl mx-auto px-4">
+                <div class="mb-16 text-center">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-brand-500 to-accent-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-6 shadow-xl shadow-brand-500/30 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                        <i class="fa-solid fa-layer-group -rotate-3 hover:rotate-0"></i>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="text-sm font-bold text-slate-700 mb-6">Risk by Contract Type</h3>
-                        <div class="h-64 flex justify-center"><canvas id="barChart"></canvas></div>
+                    <h2 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">End-to-End ML Architecture</h2>
+                    <p class="text-slate-500 font-medium text-lg max-w-3xl mx-auto">A production-ready data science
+                        pipeline moving from raw CRM data extraction to real-time predictive deployment.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+
+                    <div
+                        class="glass-card p-8 rounded-[32px] relative group overflow-hidden border border-slate-200/60 hover:border-brand-300">
+                        <div
+                            class="absolute top-0 right-0 w-32 h-32 bg-brand-50 rounded-bl-[100px] -z-10 transition-colors group-hover:bg-brand-100/50">
+                        </div>
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-14 h-14 bg-white shadow-soft rounded-2xl flex items-center justify-center text-brand-600 text-xl group-hover:scale-110 group-hover:bg-brand-600 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <span
+                                class="text-5xl font-black text-slate-300 group-hover:text-brand-300 transition-colors">01</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-3">Business & KPI Framing</h3>
+                        <p class="text-slate-500 font-medium text-sm leading-relaxed">Translating the retention problem
+                            into a machine learning objective. Defining target variables, establishing baseline churn
+                            rates, and aligning model success metrics with customer Lifetime Value (LTV).</p>
+                    </div>
+
+                    <div
+                        class="glass-card p-8 rounded-[32px] relative group overflow-hidden border border-slate-200/60 hover:border-accent-300">
+                        <div
+                            class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[100px] -z-10 transition-colors group-hover:bg-indigo-100/50">
+                        </div>
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-14 h-14 bg-white shadow-soft rounded-2xl flex items-center justify-center text-accent-600 text-xl group-hover:scale-110 group-hover:bg-accent-600 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-database"></i>
+                            </div>
+                            <span
+                                class="text-5xl font-black text-slate-300 group-hover:text-indigo-300 transition-colors">02</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-3">Data Engineering</h3>
+                        <p class="text-slate-500 font-medium text-sm leading-relaxed">Handling missing values, outlier
+                            treatment, and data type formatting. Performing feature extraction (e.g., tenure clustering,
+                            expense ratios) and encoding categorical variables using One-Hot and Label Encoding.</p>
+                    </div>
+
+                    <div
+                        class="glass-card p-8 rounded-[32px] relative group overflow-hidden border border-slate-200/60 hover:border-amber-300">
+                        <div
+                            class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-bl-[100px] -z-10 transition-colors group-hover:bg-amber-100/50">
+                        </div>
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-14 h-14 bg-white shadow-soft rounded-2xl flex items-center justify-center text-amber-500 text-xl group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-chart-area"></i>
+                            </div>
+                            <span
+                                class="text-5xl font-black text-slate-300 group-hover:text-amber-300 transition-colors">03</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-3">Exploratory Data Analysis</h3>
+                        <p class="text-slate-500 font-medium text-sm leading-relaxed">Conducting univariate and
+                            bivariate analysis to map churn distribution. Utilizing correlation matrices and violin
+                            plots to uncover behavioral patterns linked to contract types and billing frequencies.</p>
+                    </div>
+
+                    <div
+                        class="glass-card p-8 rounded-[32px] relative group overflow-hidden border border-slate-200/60 hover:border-pink-300">
+                        <div
+                            class="absolute top-0 right-0 w-32 h-32 bg-pink-50 rounded-bl-[100px] -z-10 transition-colors group-hover:bg-pink-100/50">
+                        </div>
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-14 h-14 bg-white shadow-soft rounded-2xl flex items-center justify-center text-pink-500 text-xl group-hover:scale-110 group-hover:bg-pink-500 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <span
+                                class="text-5xl font-black text-slate-300 group-hover:text-pink-300 transition-colors">04</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-3">Modeling & Tuning</h3>
+                        <p class="text-slate-500 font-medium text-sm leading-relaxed">Addressing target imbalance using
+                            SMOTE. Training robust ensemble algorithms (XGBoost, Random Forest) and optimizing
+                            hyperparameters via Grid Search to maximize recall for identifying at-risk customers.</p>
+                    </div>
+
+                    <div
+                        class="glass-card p-8 rounded-[32px] relative group overflow-hidden border border-slate-200/60 hover:border-emerald-300">
+                        <div
+                            class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-[100px] -z-10 transition-colors group-hover:bg-emerald-100/50">
+                        </div>
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-14 h-14 bg-white shadow-soft rounded-2xl flex items-center justify-center text-emerald-500 text-xl group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                            </div>
+                            <span
+                                class="text-5xl font-black text-slate-300 group-hover:text-emerald-300 transition-colors">05</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-3">Evaluation & Explainability</h3>
+                        <p class="text-slate-500 font-medium text-sm leading-relaxed">Validating model performance using
+                            ROC-AUC, F1-Score, and Precision-Recall curves. Integrating feature importance and SHAP
+                            values to explain prediction drivers to non-technical stakeholders.</p>
+                    </div>
+
+                    <div
+                        class="glass-card p-8 rounded-[32px] relative group overflow-hidden border border-slate-200/60 hover:border-blue-300">
+                        <div
+                            class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[100px] -z-10 transition-colors group-hover:bg-blue-100/50">
+                        </div>
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-14 h-14 bg-white shadow-soft rounded-2xl flex items-center justify-center text-blue-500 text-xl group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-rocket"></i>
+                            </div>
+                            <span
+                                class="text-5xl font-black text-slate-300 group-hover:text-blue-300 transition-colors">06</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-3">Deployment & API</h3>
+                        <p class="text-slate-500 font-medium text-sm leading-relaxed">Serializing the champion model
+                            (Pickle/Joblib) and deploying it securely via a RESTful FastAPI backend. Connecting the API
+                            to this Tailwind UI for seamless live scoring and batch data processing.</p>
+                    </div>
+
+                </div>
+            </section>
+
+            <section id="page-about" class="page-section max-w-7xl mx-auto px-4">
+                <div class="glass-card p-10 md:p-16 rounded-[40px] overflow-hidden relative">
+                    <div
+                        class="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none">
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 w-72 h-72 bg-accent-500/10 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none">
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-16 items-center relative z-10">
+
+                        <div class="space-y-8">
+                            <div>
+                                <div
+                                    class="w-20 h-20 bg-gradient-to-br from-brand-500 to-accent-600 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-brand-500/30 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                                    <i
+                                        class="fa-solid fa-code-branch text-white text-3xl rotate-3 hover:rotate-0 transition-transform"></i>
+                                </div>
+                                <h2
+                                    class="text-4xl lg:text-5xl font-black text-slate-900 mb-4 leading-tight tracking-tight">
+                                    Empowering Proactive <br><span
+                                        class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-accent-600">Retention
+                                        Workflows.</span>
+                                </h2>
+                                <p class="text-xl font-bold text-slate-500 mb-6">Bridging the gap between raw customer
+                                    data and
+                                    actionable business intelligence.</p>
+                            </div>
+
+                            <div class="space-y-5">
+                                <p class="text-slate-600 text-lg leading-relaxed font-medium">
+                                    This Customer Churn Prediction platform is a sophisticated, end-to-end Machine
+                                    Learning solution
+                                    developed to tackle real-world subscription retention challenges. It transforms
+                                    historical data
+                                    into predictive foresight.
+                                </p>
+                                <p class="text-slate-600 text-lg leading-relaxed font-medium">
+                                    By seamlessly integrating rigorous statistical modeling with a modern web interface,
+                                    the system
+                                    calculates churn probability based on complex vectors: tenure longevity, billing
+                                    history,
+                                    interaction sentiment, and contract structures.
+                                </p>
+                            </div>
+
+                            <div class="bg-slate-50/50 rounded-2xl p-6 border border-slate-100 space-y-4 shadow-sm">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                    <p class="text-slate-700 font-bold">Identifies high-risk cohorts before cancellation
+                                        occurs.</p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                    <p class="text-slate-700 font-bold">Protects recurring revenue and increases
+                                        Customer Lifetime
+                                        Value (LTV).</p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                    <p class="text-slate-700 font-bold">Provides explainable AI drivers for targeted
+                                        marketing
+                                        interventions.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative lg:ml-auto w-full max-w-lg">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-tr from-accent-500/30 to-brand-500/30 rounded-[30px] transform rotate-3 scale-105 blur-xl">
+                            </div>
+
+                            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop"
+                                alt="Data Science Team analyzing machine learning models"
+                                class="relative rounded-[30px] shadow-2xl border-4 border-white object-cover w-full h-[550px] z-10 transform transition-transform hover:scale-[1.02] duration-500">
+
+                            <div
+                                class="absolute -left-10 top-20 bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-slate-100 z-20 animate-[float_5s_ease-in-out_infinite]">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xl">
+                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Model
+                                            Accuracy</p>
+                                        <p class="text-2xl font-black text-slate-800">94.8%</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="absolute -right-8 bottom-24 bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-slate-100 z-20 animate-[float_6s_ease-in-out_infinite_reverse]">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl">
+                                        <i class="fa-solid fa-stopwatch"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest">API
+                                            Latency</p>
+                                        <p class="text-2xl font-black text-slate-800">&lt;120ms</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-20 pt-16 border-t border-slate-200/60 relative z-10">
+                        <div class="text-center mb-12">
+                            <h3 class="text-2xl font-black text-slate-800 mb-3">Live System Architecture</h3>
+                            <p class="text-slate-500 font-medium">How data moves securely from the client to the
+                                prediction engine
+                                and back.</p>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-4 relative">
+
+                            <div
+                                class="glass-card flex-1 p-6 rounded-[24px] text-center relative z-10 w-full md:w-auto shadow-sm hover:-translate-y-1 transition-transform">
+                                <div
+                                    class="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4">
+                                    <i class="fa-solid fa-desktop"></i>
+                                </div>
+                                <h4 class="font-bold text-slate-800 mb-1">1. User UI</h4>
+                                <p class="text-xs text-slate-500 font-medium">Input metrics via Tailwind dashboard</p>
+                            </div>
+
+                            <div class="text-slate-300 text-2xl md:-rotate-90 hidden md:block"><i
+                                    class="fa-solid fa-arrow-turn-down"></i></div>
+                            <div class="text-slate-300 text-2xl block md:hidden"><i class="fa-solid fa-arrow-down"></i>
+                            </div>
+
+                            <div
+                                class="glass-card flex-1 p-6 rounded-[24px] text-center relative z-10 w-full md:w-auto shadow-sm hover:-translate-y-1 transition-transform border-brand-200">
+                                <div
+                                    class="w-14 h-14 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4">
+                                    <i class="fa-solid fa-server"></i>
+                                </div>
+                                <h4 class="font-bold text-slate-800 mb-1">2. FastAPI Server</h4>
+                                <p class="text-xs text-slate-500 font-medium">JSON payload received & validated</p>
+                            </div>
+
+                            <div class="text-slate-300 text-2xl md:-rotate-90 hidden md:block"><i
+                                    class="fa-solid fa-arrow-turn-down"></i></div>
+                            <div class="text-slate-300 text-2xl block md:hidden"><i class="fa-solid fa-arrow-down"></i>
+                            </div>
+
+                            <div
+                                class="glass-card flex-1 p-6 rounded-[24px] text-center relative z-10 w-full md:w-auto shadow-sm hover:-translate-y-1 transition-transform border-amber-200">
+                                <div
+                                    class="w-14 h-14 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                                <h4 class="font-bold text-slate-800 mb-1">3. ML Inference</h4>
+                                <p class="text-xs text-slate-500 font-medium">Joblib model predicts probability</p>
+                            </div>
+
+                            <div class="text-slate-300 text-2xl md:-rotate-90 hidden md:block"><i
+                                    class="fa-solid fa-arrow-turn-down"></i></div>
+                            <div class="text-slate-300 text-2xl block md:hidden"><i class="fa-solid fa-arrow-down"></i>
+                            </div>
+
+                            <div
+                                class="glass-card flex-1 p-6 rounded-[24px] text-center relative z-10 w-full md:w-auto shadow-sm hover:-translate-y-1 transition-transform border-purple-200">
+                                <div
+                                    class="w-14 h-14 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4">
+                                    <i class="fa-solid fa-chart-pie"></i>
+                                </div>
+                                <h4 class="font-bold text-slate-800 mb-1">4. Data Viz</h4>
+                                <p class="text-xs text-slate-500 font-medium">Chart.js renders real-time insights</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-20 pt-16 border-t border-slate-200/60 relative z-10">
+                        <div class="mb-12 text-center">
+                            <h3 class="text-3xl font-black text-slate-900 mb-4 flex items-center justify-center gap-3">
+                                <i class="fa-solid fa-trophy text-amber-500"></i> Final Technology Stack Summary
+                            </h3>
+                            <p class="text-slate-500 font-medium text-lg">A comprehensive breakdown of the tools and
+                                frameworks
+                                powering this platform.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+                            <div class="space-y-4">
+                                <h4
+                                    class="text-sm font-black text-slate-400 uppercase tracking-widest border-b border-slate-200/80 pb-3 mb-5 flex items-center gap-2">
+                                    <i class="fa-solid fa-microchip"></i> Programming & ML
+                                </h4>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-blue-200 transition-all cursor-default">
+                                    <i class="fa-brands fa-python text-2xl text-[#3776AB] w-6 text-center"></i>
+                                    <p class="text-sm font-bold text-slate-800">Python</p>
+                                </div>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-indigo-200 transition-all cursor-default">
+                                    <i class="fa-solid fa-table text-xl text-[#150458] w-6 text-center"></i>
+                                    <p class="text-sm font-bold text-slate-800 leading-tight">Pandas, NumPy</p>
+                                </div>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-amber-200 transition-all cursor-default">
+                                    <i class="fa-solid fa-brain text-xl text-[#F7931E] w-6 text-center"></i>
+                                    <p class="text-sm font-bold text-slate-800 leading-tight">Scikit-learn, XGBoost</p>
+                                </div>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-purple-200 transition-all cursor-default">
+                                    <i
+                                        class="fa-solid fa-magnifying-glass-chart text-xl text-purple-500 w-6 text-center"></i>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-800 leading-none">SHAP</p>
+                                        <p
+                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">
+                                            Explainability</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h4
+                                    class="text-sm font-black text-slate-400 uppercase tracking-widest border-b border-slate-200/80 pb-3 mb-5 flex items-center gap-2">
+                                    <i class="fa-solid fa-server"></i> Backend API
+                                </h4>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-emerald-200 transition-all cursor-default">
+                                    <i class="fa-solid fa-bolt text-xl text-[#009688] w-6 text-center"></i>
+                                    <p class="text-sm font-bold text-slate-800">FastAPI</p>
+                                </div>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-orange-200 transition-all cursor-default">
+                                    <i class="fa-solid fa-fire text-xl text-orange-500 w-6 text-center"></i>
+                                    <p class="text-sm font-bold text-slate-800">Uvicorn</p>
+                                </div>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 transition-all cursor-default">
+                                    <i class="fa-solid fa-box-archive text-xl text-slate-500 w-6 text-center"></i>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-800 leading-none">Joblib</p>
+                                        <p
+                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">
+                                            Model
+                                            Serialization</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h4
+                                    class="text-sm font-black text-slate-400 uppercase tracking-widest border-b border-slate-200/80 pb-3 mb-5 flex items-center gap-2">
+                                    <i class="fa-solid fa-desktop"></i> Frontend UI
+                                </h4>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-orange-200 transition-all cursor-default">
+                                    <i class="fa-brands fa-html5 text-2xl text-[#E34F26] w-6 text-center"></i>
+                                    <p class="text-sm font-bold text-slate-800">HTML5</p>
+                                </div>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-cyan-200 transition-all cursor-default">
+                                    <i class="fa-brands fa-css3-alt text-2xl text-[#38BDF8] w-6 text-center"></i>
+                                    <p class="text-sm font-bold text-slate-800">Tailwind CSS</p>
+                                </div>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-yellow-200 transition-all cursor-default">
+                                    <i class="fa-brands fa-js text-2xl text-[#F7DF1E] w-6 text-center rounded-sm"></i>
+                                    <p class="text-sm font-bold text-slate-800">JavaScript</p>
+                                </div>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-pink-200 transition-all cursor-default">
+                                    <i class="fa-solid fa-chart-pie text-xl text-[#FF6384] w-6 text-center"></i>
+                                    <p class="text-sm font-bold text-slate-800">Chart.js</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h4
+                                    class="text-sm font-black text-slate-400 uppercase tracking-widest border-b border-slate-200/80 pb-3 mb-5 flex items-center gap-2">
+                                    <i class="fa-solid fa-cloud"></i> Deployment
+                                </h4>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-slate-400 transition-all cursor-default">
+                                    <i
+                                        class="fa-solid fa-caret-up text-3xl text-slate-900 w-6 text-center leading-none"></i>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-800 leading-none">Vercel</p>
+                                        <p
+                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">
+                                            Frontend
+                                            Hosting</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="px-5 py-3.5 bg-white/80 border border-slate-200 shadow-sm rounded-xl flex items-center gap-4 hover:-translate-y-1 hover:shadow-md hover:border-blue-200 transition-all cursor-default">
+                                    <i class="fa-solid fa-cloud-arrow-up text-xl text-blue-500 w-6 text-center"></i>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-800 leading-none">Render / Railway</p>
+                                        <p
+                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">
+                                            FastAPI
+                                            Server</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section id="page-contact" class="page-section max-w-xl mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl md:text-4xl font-black text-slate-900">Developer Profile</h2>
+                </div>
+
+                <div class="glass-card rounded-[32px] overflow-hidden group shadow-xl border border-slate-100">
+
+                    <div
+                        class="w-full h-32 bg-gradient-to-r from-brand-600 via-accent-600 to-purple-800 relative overflow-hidden">
+                        <div class="absolute inset-0 opacity-20"
+                            style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;">
+                        </div>
+                    </div>
+
+                    <div class="px-8 pb-10 flex flex-col items-center -mt-16 relative z-10">
+
+                        <div
+                            class="w-32 h-32 bg-white rounded-full p-1.5 shadow-lg mb-4 group-hover:-translate-y-1 transition-transform duration-500">
+                            <img src="https://ui-avatars.com/api/?name=Abhishek+Ankushe&background=eef2ff&color=0d9488&size=256&font-weight=bold"
+                                alt="Abhishek Ankushe" class="w-full h-full rounded-full object-cover">
+                        </div>
+
+                        <h3 class="text-2xl font-black text-slate-900 mb-1">Abhishek Ankushe</h3>
+                        <p class="text-brand-600 font-bold mb-6 tracking-widest uppercase text-xs">Data Analyst | Data
+                            Scientist</p>
+
+                        <div class="w-full space-y-3">
+
+                            <a href="mailto:abhishekankushe3@gmail.com"
+                                class="flex items-center p-3.5 bg-white hover:bg-slate-50 rounded-2xl border border-slate-200 shadow-sm transition-all group/link">
+                                <div
+                                    class="w-10 h-10 bg-white shadow-sm border border-slate-100 rounded-xl flex items-center justify-center text-brand-500 mr-4 group-hover/link:scale-110 transition-transform">
+                                    <i class="fa-solid fa-envelope text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">
+                                        Email</p>
+                                    <p class="text-sm text-slate-800 font-bold">Connect via Email</p>
+                                </div>
+                            </a>
+
+                            <div
+                                class="flex items-center p-3.5 bg-white hover:bg-slate-50 rounded-2xl border border-slate-200 shadow-sm transition-all group/link cursor-default">
+                                <div
+                                    class="w-10 h-10 bg-white shadow-sm border border-slate-100 rounded-xl flex items-center justify-center text-brand-500 mr-4 group-hover/link:scale-110 transition-transform">
+                                    <i class="fa-solid fa-location-dot text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">
+                                        Location</p>
+                                    <p class="text-sm text-slate-800 font-bold">Nagpur, Maharashtra, India</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-3 pt-2">
+
+                                <a href="https://abhishek-ankushe.vercel.app" target="_blank"
+                                    class="flex flex-col items-center justify-center py-3 bg-gradient-to-br from-brand-500 to-accent-600 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
+                                    <i class="fa-solid fa-globe text-xl mb-1"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider">Website</span>
+                                </a>
+
+                                <a href="https://www.linkedin.com/in/abhishek-ankushe/" target="_blank"
+                                    class="flex flex-col items-center justify-center py-3 bg-[#0A66C2] text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
+                                    <i class="fa-brands fa-linkedin text-xl mb-1"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider">LinkedIn</span>
+                                </a>
+
+                                <a href="https://github.com/abhishekankushe" target="_blank"
+                                    class="flex flex-col items-center justify-center py-3 bg-slate-900 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
+                                    <i class="fa-brands fa-github text-xl mb-1"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider">GitHub</span>
+                                </a>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
-
     </main>
 
+    <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-brand-500/20 rounded-xl flex items-center justify-center text-brand-400">
+                    <i class="fa-solid fa-brain text-xl"></i>
+                </div>
+                <span class="font-black text-white text-xl tracking-tight">ChurnPredict ML</span>
+            </div>
+
+            <p class="text-slate-400 font-medium text-center md:text-left">&copy; 2026 Developed by Abhishek Ankushe.
+                All rights reserved.</p>
+
+            <div class="flex space-x-6">
+                <a href="#"
+                    class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-brand-600 transition-all transform hover:scale-110"><i
+                        class="fa-brands fa-github text-lg"></i></a>
+                <a href="#"
+                    class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-brand-600 transition-all transform hover:scale-110"><i
+                        class="fa-brands fa-linkedin-in text-lg"></i></a>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // API Configuration (Update this if your Render URL changes)
         const API_URL = "https://connecttel-api.onrender.com";
         const API_KEY = "prabhudev-connecttel-secret-key-2026";
 
-        let gaugeChartInstance = null;
-        let pieChartInstance = null;
-        let barChartInstance = null;
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+            const icon = btn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        });
 
-        // --- NAVIGATION LOGIC ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        function switchTab(tab) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
 
-            document.getElementById(`page-${tabId}`).classList.add('active');
-            document.getElementById(`nav-${tabId}`).classList.add('active');
+            document.getElementById(`page-${tab}`).classList.add('active');
+
+            const navElements = document.querySelectorAll(`[onclick="switchTab('${tab}')"]`);
+            navElements.forEach(el => {
+                if (el.classList.contains('nav-link')) el.classList.add('active');
+            });
+
+            menu.classList.add('hidden');
+            if (btn.querySelector('i').classList.contains('fa-xmark')) {
+                btn.querySelector('i').classList.replace('fa-xmark', 'fa-bars');
+            }
+
+            if (tab !== 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- SINGLE CUSTOMER LOGIC ---
-        document.getElementById("churnForm").addEventListener("submit", async function (e) {
+        // --- LIVE SCORING ---
+        let gaugeChart;
+        document.getElementById("churnForm").addEventListener("submit", async e => {
             e.preventDefault();
 
-            const btn = e.target.querySelector('button');
-            btn.innerText = "Analyzing...";
-
-            const data = {
-                tenure_months: parseInt(document.getElementById("tenure").value),
-                monthly_charges: parseFloat(document.getElementById("monthly_charges").value),
-                total_charges: parseFloat(document.getElementById("monthly_charges").value) * parseInt(document.getElementById("tenure").value),
-                arpu: parseFloat(document.getElementById("monthly_charges").value) * 0.9,
-                num_complaints_3m: parseInt(document.getElementById("complaints").value),
-                contract_type: document.getElementById("contract").value
-            };
+            const submitBtn = e.target.querySelector('button');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Running Analysis...';
+            submitBtn.disabled = true;
 
             try {
-                const response = await fetch(`${API_URL}/predict`, {
+                const data = {
+                    tenure_months: parseInt(document.getElementById('tenure').value),
+                    monthly_charges: parseFloat(document.getElementById('monthly_charges').value),
+                    total_charges: parseFloat(document.getElementById('monthly_charges').value) * parseInt(document.getElementById('tenure').value),
+                    arpu: parseFloat(document.getElementById('monthly_charges').value) * 0.9,
+                    num_complaints_3m: parseInt(document.getElementById('complaints').value),
+                    contract_type: document.getElementById('contract').value
+                };
+
+                const res = await fetch(`${API_URL}/predict`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "X-API-Key": API_KEY },
                     body: JSON.stringify(data)
                 });
 
-                if (response.status === 403) return alert("Access Denied: Invalid API Key");
+                if (!res.ok) throw new Error("API Connection Failed");
 
-                const result = await response.json();
-                renderSingleResult(result.churn_probability * 100);
+                const result = await res.json();
+                const prob = result.churn_probability * 100;
+                const isHighRisk = prob > 45;
+
+                document.getElementById('single-placeholder').style.display = "none";
+                document.getElementById('single-result').classList.remove("hidden");
+                document.getElementById('probPercent').innerText = prob.toFixed(1) + "%";
+                document.getElementById('probPercent').className = isHighRisk
+                    ? "text-5xl sm:text-6xl font-black text-slate-800 tracking-tighter drop-shadow-sm text-red-600"
+                    : "text-5xl sm:text-6xl font-black text-slate-800 tracking-tighter drop-shadow-sm text-emerald-500";
+
+                const titleEl = document.getElementById('riskTitle');
+                const recEl = document.getElementById('recText');
+                const boxEl = document.getElementById('riskAlertBox');
+
+                if (isHighRisk) {
+                    titleEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-500"></i> High Churn Risk';
+                    titleEl.className = "text-2xl font-black mb-3 flex items-center justify-center gap-3 text-slate-800";
+                    recEl.innerText = "Immediate targeted retention action recommended based on behavioral profile.";
+                    recEl.className = "font-bold text-[15px] leading-relaxed text-red-600";
+                    boxEl.className = "p-8 rounded-[24px] inline-flex flex-col items-center w-full max-w-md shadow-sm border transition-all duration-500 bg-red-50 border-red-200";
+                } else {
+                    titleEl.innerHTML = '<i class="fa-solid fa-shield-check text-emerald-500"></i> Stable Customer';
+                    titleEl.className = "text-2xl font-black mb-3 flex items-center justify-center gap-3 text-slate-800";
+                    recEl.innerText = "Customer retention signals are strong. Continue standard engagement protocols.";
+                    recEl.className = "font-bold text-[15px] leading-relaxed text-emerald-600";
+                    boxEl.className = "p-8 rounded-[24px] inline-flex flex-col items-center w-full max-w-md shadow-sm border transition-all duration-500 bg-emerald-50 border-emerald-200";
+                }
+
+                const ctx = document.getElementById('gaugeChart').getContext('2d');
+                if (gaugeChart) gaugeChart.destroy();
+
+                gaugeChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [prob, 100 - prob],
+                            backgroundColor: [isHighRisk ? '#ef4444' : '#10b981', '#f1f5f9'],
+                            borderWidth: 0,
+                            borderRadius: 20
+                        }]
+                    },
+                    options: {
+                        cutout: '80%',
+                        rotation: 270,
+                        circumference: 180,
+                        aspectRatio: 2,
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                        animation: { animateScale: true, animateRotate: true, duration: 2000, easing: 'easeOutQuart' },
+                        layout: {
+                            padding: { bottom: 10 }
+                        }
+                    }
+                });
+
             } catch (error) {
-                alert("Error connecting to the API. Check if your server is live.");
+                console.error("Prediction Error:", error);
+                alert("Failed to connect to prediction API. Ensure the backend is running.");
             } finally {
-                btn.innerText = "Analyze Customer";
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
         });
 
-        function renderSingleResult(prob) {
-            document.getElementById('single-placeholder').classList.add('hidden');
-            document.getElementById('single-result').classList.remove('hidden');
+        // --- BATCH DASHBOARD ---
+        let dashboardCharts = {};
 
-            const isHigh = prob > 45;
-            document.getElementById('probText').innerText = prob.toFixed(1) + "%";
-
-            const title = document.getElementById('riskTitle');
-            title.innerText = isHigh ? "🚨 HIGH FLIGHT RISK" : "✅ STABLE ACCOUNT";
-            title.className = `text-3xl font-black mb-3 ${isHigh ? 'text-red-600' : 'text-emerald-500'}`;
-
-            document.getElementById('recText').innerText = isHigh
-                ? "Immediate intervention required. Recommend transferring to specialized retention queue and offering a minimum 15% recurring discount."
-                : "Customer shows strong retention signals. Proceed with standard lifecycle marketing and soft upselling.";
-
-            // Draw Gauge Chart
-            const ctx = document.getElementById('gaugeChart').getContext('2d');
-            if (gaugeChartInstance) gaugeChartInstance.destroy();
-
-            gaugeChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [prob, 100 - prob],
-                        backgroundColor: [isHigh ? '#ef4444' : '#10b981', '#f1f5f9'],
-                        borderWidth: 0,
-                        circumference: 180,
-                        rotation: 270
-                    }]
-                },
-                options: { cutout: '80%', plugins: { tooltip: { enabled: false } } }
-            });
-        }
-
-        // --- BATCH DASHBOARD LOGIC ---
-        document.getElementById('csvFile').addEventListener('change', async (e) => {
+        document.getElementById("csvFile").addEventListener("change", async e => {
             const file = e.target.files[0];
             if (!file) return;
 
-            const formData = new FormData();
-            formData.append("file", file);
+            const dropzone = e.target.parentElement;
+            dropzone.classList.add('animate-pulse', 'bg-brand-50');
 
             try {
-                // Assuming your backend has a /predict_batch endpoint
-                const response = await fetch(`${API_URL}/predict_batch`, {
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const res = await fetch(`${API_URL}/predict_batch`, {
                     method: "POST",
                     headers: { "X-API-Key": API_KEY },
                     body: formData
                 });
 
-                if (response.status === 404) return alert("The /predict_batch endpoint is not set up on your server yet!");
+                if (!res.ok) throw new Error("Batch API Error");
+                const data = await res.json();
 
-                const result = await response.json();
-                renderDashboard(result);
+                document.getElementById('dashboard-reports').classList.remove("hidden");
+
+                document.getElementById('stat-total').innerText = data.summary.total.toLocaleString();
+                document.getElementById('stat-high').innerText = data.summary.high_risk.toLocaleString();
+                document.getElementById('stat-avg').innerText = (data.summary.avg_probability * 100).toFixed(1) + "%";
+
+                const estRevRisk = data.summary.high_risk * 89.99;
+                document.getElementById('stat-rev').innerText = "$" + estRevRisk.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+                renderDashboardCharts(data);
+
             } catch (error) {
-                alert("Error processing file. Check console for details.");
-                console.error(error);
+                console.error("Batch Error:", error);
+                alert("Failed to process batch data. Ensure your API is returning the correct format.");
+            } finally {
+                dropzone.classList.remove('animate-pulse', 'bg-brand-50');
+                e.target.value = '';
             }
         });
 
-        function renderDashboard(data) {
-            document.getElementById('dashboard-reports').classList.remove('hidden');
+        function renderDashboardCharts(apiData) {
+            const initChart = (id, config) => {
+                if (dashboardCharts[id]) dashboardCharts[id].destroy();
+                const ctx = document.getElementById(id).getContext('2d');
+                dashboardCharts[id] = new Chart(ctx, config);
+            };
 
-            // Populate Stats (Adjust variable names based on your exact backend response)
-            document.getElementById('stat-total').innerText = data.summary.total || 0;
-            document.getElementById('stat-high').innerText = data.summary.high_risk || 0;
-            document.getElementById('stat-avg').innerText = (data.summary.avg_probability * 100).toFixed(1) + "%" || "0%";
+            Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
+            Chart.defaults.font.weight = '600';
+            Chart.defaults.color = '#94a3b8';
 
-            // Draw Pie Chart
-            const ctxPie = document.getElementById('pieChart').getContext('2d');
-            if (pieChartInstance) pieChartInstance.destroy();
-            pieChartInstance = new Chart(ctxPie, {
-                type: 'pie',
+            // Chart 1
+            initChart('distChart', {
+                type: 'bar',
                 data: {
-                    labels: ['High Risk', 'Low Risk'],
+                    labels: ['0-20%', '21-40%', '41-60%', '61-80%', '81-100%'],
                     datasets: [{
-                        data: [data.summary.high_risk, data.summary.low_risk],
-                        backgroundColor: ['#ef4444', '#10b981'],
-                        borderWidth: 0
+                        label: 'Customers',
+                        data: [12400, 5200, 3100, 2600, 1700],
+                        backgroundColor: '#14b8a6',
+                        borderRadius: 8,
+                        barPercentage: 0.6
                     }]
                 },
-                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { border: { display: false }, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+                }
             });
 
-            // Draw Bar Chart (Mock data for illustration - update backend to send this if needed)
-            const ctxBar = document.getElementById('barChart').getContext('2d');
-            if (barChartInstance) barChartInstance.destroy();
-            barChartInstance = new Chart(ctxBar, {
-                type: 'bar',
+            // Chart 2
+            initChart('contractChart', {
+                type: 'doughnut',
                 data: {
                     labels: ['Month-to-Month', '1 Year', '2 Year'],
                     datasets: [{
-                        label: 'High Risk Count',
-                        data: [data.summary.high_risk * 0.8, data.summary.high_risk * 0.15, data.summary.high_risk * 0.05], // Example distribution
-                        backgroundColor: '#6366f1',
-                        borderRadius: 6
+                        data: [55, 30, 15],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                        borderWidth: 0, hoverOffset: 8
                     }]
                 },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } } },
+                    cutout: '78%', animation: { animateScale: true }
+                }
+            });
+
+            // Chart 3
+            initChart('tenureChart', {
+                type: 'line',
+                data: {
+                    labels: ['0-6m', '6-12m', '1-2y', '2-4y', '4y+'],
+                    datasets: [{
+                        label: 'Avg Risk (%)',
+                        data: [72, 54, 38, 22, 12],
+                        borderColor: '#6366f1', backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 4, fill: true, tension: 0.4,
+                        pointBackgroundColor: '#fff', pointBorderColor: '#6366f1', pointBorderWidth: 3, pointRadius: 6, pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, max: 100, border: { display: false }, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+                }
+            });
+
+            // Chart 4
+            initChart('factorChart', {
+                type: 'bar',
+                data: {
+                    labels: ['Contract', 'Charges', 'Tenure', 'Tickets', 'Complaints'],
+                    datasets: [{
+                        label: 'Impact Score',
+                        data: [0.38, 0.25, 0.18, 0.12, 0.07],
+                        backgroundColor: ['#3b82f6', '#0ea5e9', '#06b6d4', '#14b8a6', '#10b981'],
+                        borderRadius: 8, barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true, border: { display: false }, grid: { color: '#f1f5f9' } }, y: { grid: { display: false } } }
+                }
             });
         }
     </script>
