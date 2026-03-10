@@ -1,6 +1,9 @@
 
 # ConnectTel Customer Churn Prediction Engine
 
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Check_it_Out-brightgreen?style=for-the-badge&logo=rocket)](https://churnprediction-analysis.vercel.app/)
+
 ![Python 3.12+](https://img.shields.io/badge/Python-3.12+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?logo=fastapi&logoColor=white)
 ![XGBoost](https://img.shields.io/badge/XGBoost-ML-tree?logo=xgboost&logoColor=white)
