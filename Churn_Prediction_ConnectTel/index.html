@@ -732,6 +732,8 @@
                         </div>
                     </div>
 
+
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div class="glass-card p-8 rounded-[32px]">
                             <h3
@@ -765,9 +767,114 @@
                             </h3>
                             <div class="relative h-72 w-full"><canvas id="factorChart"></canvas></div>
                         </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-shield-halved text-emerald-500"></i> Model Performance (Matrix)
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="confusionMatrix"></canvas></div>
+                        </div>
+
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-spider text-indigo-500"></i> Behavioral Correlation Map
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="radarChart"></canvas></div>
+                        </div>
+
+
+
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-comment-dollar text-orange-500"></i> Value vs. Risk Analysis
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="scatterChart"></canvas></div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-wifi text-teal-500"></i> Risk by Service Segment
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="polarChart"></canvas></div>
+                        </div>
+
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-users-viewfinder text-blue-500"></i> Cohort Decay
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="cohortChart"></canvas></div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-gem text-purple-500"></i> LTV vs. Risk Matrix
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="ltvBubbleChart"></canvas></div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-headset text-emerald-500"></i> Support Resolution Impact
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="supportImpactChart"></canvas></div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-regular fa-credit-card text-orange-500"></i> Payment Delay Escalation
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="paymentDelayChart"></canvas></div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-regular fa-face-angry text-red-500"></i> Interaction Sentiment
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="sentimentChart"></canvas></div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px]">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-code-compare text-indigo-500"></i> Feature Importance Drift
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="driftRadarChart"></canvas></div>
+                        </div>
+
+                        <div class="glass-card p-8 rounded-[32px] md:col-span-2">
+                            <h3
+                                class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-vault text-amber-500"></i> Retention Campaign ROI Forecast
+                            </h3>
+                            <div class="relative h-72 w-full"><canvas id="roiWaterfallChart"></canvas></div>
+                        </div>
+
+
                     </div>
                 </div>
             </section>
+
+
+
+
+
+
+
+
+
+
 
             <section id="page-pipeline" class="page-section max-w-7xl mx-auto px-4">
                 <div class="mb-16 text-center">
@@ -1668,6 +1775,209 @@
                     plugins: { title: { display: true, text: 'Behavioral Feature Correlation', font: { size: 14 } } }
                 }
             });
+
+            // 7. NEW: Revenue vs Risk (Scatter Plot)
+            // Shows if customers with higher monthly charges are more likely to churn
+            initChart('scatterChart', {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Customer Cohort',
+                        data: [
+                            { x: 25, y: 80 }, { x: 89, y: 95 }, { x: 45, y: 30 }, { x: 105, y: 85 }, { x: 60, y: 20 },
+                            { x: 15, y: 60 }, { x: 120, y: 15 }, { x: 75, y: 40 }, { x: 95, y: 70 }, { x: 55, y: 50 },
+                            { x: 35, y: 75 }, { x: 110, y: 65 }, { x: 80, y: 25 }, { x: 65, y: 85 }, { x: 40, y: 15 }
+                        ], // Simulated data points (Monthly Charge vs Probability)
+                        backgroundColor: 'rgba(249, 115, 22, 0.6)', // Orange
+                        borderColor: '#f97316',
+                        pointRadius: 6,
+                        pointHoverRadius: 9
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Monthly Charges ($) vs. Churn Risk (%)', font: { size: 14 } }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Monthly Bill ($)' }, grid: { color: '#f1f5f9' } },
+                        y: { title: { display: true, text: 'Risk Probability (%)' }, grid: { color: '#f1f5f9' }, min: 0, max: 100 }
+                    }
+                }
+            });
+
+            // 8. NEW: Risk by Service Type (Polar Area)
+            // Highlights network infrastructure issues (e.g., Prepaid vs Fiber)
+            initChart('polarChart', {
+                type: 'polarArea',
+                data: {
+                    labels: ['4G Prepaid', '5G Postpaid', 'Fiber Broadband', 'Corporate Bundles'],
+                    datasets: [{
+                        data: [82, 45, 25, 12], // Average risk percentage per segment
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.7)',   // Red (High Risk)
+                            'rgba(59, 130, 246, 0.7)',  // Blue (Medium)
+                            'rgba(16, 185, 129, 0.7)',  // Green (Low)
+                            'rgba(139, 92, 246, 0.7)'   // Purple (Very Low)
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { padding: 15, usePointStyle: true } },
+                        title: { display: true, text: 'Avg Vulnerability by Network Type', font: { size: 14 } }
+                    }
+                }
+            });
+
+            // 9. NEW: Cohort Retention Curve (Multi-Line)
+            // Shows how different sign-up groups decay over time
+            initChart('cohortChart', {
+                type: 'line',
+                data: {
+                    labels: ['Month 1', 'Month 3', 'Month 6', 'Month 12', 'Month 24'],
+                    datasets: [
+                        { label: 'Q1 Cohort', data: [100, 85, 70, 55, 45], borderColor: '#3b82f6', tension: 0.4 },
+                        { label: 'Q2 Cohort', data: [100, 90, 75, 60, 50], borderColor: '#10b981', tension: 0.4 },
+                        { label: 'Q3 Cohort', data: [100, 80, 60, 45, 30], borderColor: '#ef4444', tension: 0.4 } // Problematic cohort
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'Retention Decay by Signup Cohort' } }
+                }
+            });
+
+            // 10. NEW: Customer Lifetime Value (LTV) vs Churn Probability (Bubble)
+            // Identifies high-value customers who are at high risk (Red Zone)
+            initChart('ltvBubbleChart', {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Customer Segments',
+                        data: [
+                            { x: 85, y: 5000, r: 15 }, { x: 20, y: 1500, r: 8 }, { x: 90, y: 8000, r: 25 }, // High Risk / High LTV = Priority
+                            { x: 45, y: 3000, r: 12 }, { x: 10, y: 9000, r: 20 }, { x: 75, y: 2000, r: 10 }
+                        ],
+                        backgroundColor: 'rgba(139, 92, 246, 0.6)',
+                        borderColor: '#8b5cf6'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'LTV ($) vs Risk (%) - Bubble Size = Tenure' } },
+                    scales: {
+                        x: { title: { display: true, text: 'Churn Probability (%)' }, min: 0, max: 100 },
+                        y: { title: { display: true, text: 'Predicted LTV ($)' } }
+                    }
+                }
+            });
+
+            // 11. NEW: Support Ticket Resolution Impact (Stacked Bar)
+            // Shows if resolving tickets quickly prevents churn
+            initChart('supportImpactChart', {
+                type: 'bar',
+                data: {
+                    labels: ['Same Day', '1-3 Days', '3-7 Days', 'Unresolved'],
+                    datasets: [
+                        { label: 'Retained', data: [85, 60, 30, 5], backgroundColor: '#10b981' },
+                        { label: 'Churned', data: [15, 40, 70, 95], backgroundColor: '#ef4444' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { x: { stacked: true }, y: { stacked: true } },
+                    plugins: { title: { display: true, text: 'Resolution Time vs. Attrition' } }
+                }
+            });
+
+            // 12. NEW: Payment Delay Heatmap Concept (Bar)
+            // Correlates late payments with impending churn
+            initChart('paymentDelayChart', {
+                type: 'bar',
+                data: {
+                    labels: ['On Time', '1-5 Days Late', '6-15 Days Late', '15+ Days Late'],
+                    datasets: [{
+                        label: 'Avg Churn Risk (%)',
+                        data: [12, 35, 68, 92],
+                        backgroundColor: ['#14b8a6', '#f59e0b', '#f97316', '#dc2626'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'Risk Escalation by Payment Delay' } }
+                }
+            });
+
+            // 13. NEW: Sentiment Analysis of Interaction (Doughnut)
+            // Assumes NLP was run on support call transcripts
+            initChart('sentimentChart', {
+                type: 'doughnut',
+                data: {
+                    labels: ['Positive', 'Neutral', 'Frustrated', 'Angry'],
+                    datasets: [{
+                        data: [40, 35, 20, 5],
+                        backgroundColor: ['#10b981', '#94a3b8', '#f59e0b', '#ef4444'],
+                        cutout: '60%'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'NLP Sentiment of Last Interaction' } }
+                }
+            });
+
+            // 14. NEW: Feature Importance Shift (Radar)
+            // Compares current batch feature importance against historical baseline
+            initChart('driftRadarChart', {
+                type: 'radar',
+                data: {
+                    labels: ['Price', 'Network Qlty', 'Competitor Offer', 'Support', 'Relocation'],
+                    datasets: [
+                        { label: 'Current Batch Drivers', data: [90, 85, 60, 40, 20], borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.2)' },
+                        { label: 'Historical Baseline', data: [70, 50, 45, 50, 25], borderColor: '#94a3b8', borderDash: [5, 5], fill: false }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'Feature Drift Analysis (Why are they leaving now?)' } }
+                }
+            });
+
+            // 15. NEW: Waterfall ROI of Intervention (Waterfall/Stepped Bar)
+            // Shows the financial flow of saving customers
+            initChart('roiWaterfallChart', {
+                type: 'bar',
+                data: {
+                    labels: ['Revenue at Risk', 'Intervention Cost', 'Expected Save Rate', 'Net Revenue Protected'],
+                    datasets: [{
+                        label: 'Financial Impact ($)',
+                        data: [150000, -15000, -40000, 95000], // Example financial flow
+                        backgroundColor: (ctx) => ctx.raw > 0 ? '#10b981' : '#ef4444',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Retention Campaign ROI Forecast' }
+                    }
+                }
+            });
+
+
+
+
+
+
+
+
         } </script>
 </body>
 
