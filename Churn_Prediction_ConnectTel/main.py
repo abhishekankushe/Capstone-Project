@@ -6,11 +6,13 @@ import pandas as pd
 import numpy as np
 import joblib
 import io
+import os 
 
 app = FastAPI(title="ConnectTel Churn Prediction API")
 
 # --- 1. SET UP YOUR CUSTOM API KEY ---
-API_KEY = "https://connecttel-api.onrender.com"  
+# Grabs the key from Render, or uses the default if running locally
+API_KEY = os.getenv("MY_SECRET_API_KEY", "abhishek-connecttel-secret-key-2026")  
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 def get_api_key(api_key_header: str = Security(api_key_header)):
