@@ -12,7 +12,7 @@ app = FastAPI(title="ConnectTel Churn Prediction API")
 
 # --- 1. SET UP YOUR CUSTOM API KEY ---
 # Grabs the key from Render, or uses the default if running locally
-API_KEY = os.getenv("MY_SECRET_API_KEY", "abhishek-connecttel-secret-key-2026")  
+API_KEY = os.getenv("https://connecttel-api.onrender.com", "abhishek-connecttel-secret-key-2026")  
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 def get_api_key(api_key_header: str = Security(api_key_header)):
@@ -75,6 +75,9 @@ def predict_churn(customer: CustomerData, api_key: str = Depends(get_api_key)):
     df["bill_shock"] = np.where(df["monthly_charges"] > 80.0, 1, 0) 
     df["high_value_flag"] = np.where(df["arpu"] > 900.0, 1, 0)
     
+    # --- ADDED: value_ratio calculation for single prediction ---
+    df["value_ratio"] = df["arpu"] / (df["monthly_charges"] + 1)
+    
     probability = model.predict_proba(df)[0][1]
     prediction = 1 if probability >= 0.45 else 0
     risk_level = "High Risk" if prediction == 1 else "Low Risk"
@@ -110,6 +113,9 @@ async def predict_batch(file: UploadFile = File(...), api_key: str = Depends(get
     df["bill_shock"] = np.where(df.get("monthly_charges", 0) > 80.0, 1, 0) 
     df["high_value_flag"] = np.where(df["arpu"] > 900.0, 1, 0)
 
+    # --- ADDED: value_ratio calculation for batch prediction ---
+    df["value_ratio"] = df["arpu"] / (df.get("monthly_charges", 0) + 1)
+
     # Make bulk predictions
     probabilities = model.predict_proba(df)[:, 1]
     predictions = (probabilities >= 0.45).astype(int)
@@ -128,7 +134,3 @@ async def predict_batch(file: UploadFile = File(...), api_key: str = Depends(get
             "avg_probability": avg_probability
         }
     }
-    
-    
-    
-    
